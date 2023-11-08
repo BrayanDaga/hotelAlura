@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import jdbc.factory.ConnectionFactory;
 import jdbc.modelo.Reserva;
@@ -17,7 +19,7 @@ public class ReservaDAO {
 	}
 
 	public void guardar(Reserva nuevaReserva) {
-		
+
 		try {
 			PreparedStatement statement;
 			statement = con.prepareStatement(
@@ -45,4 +47,34 @@ public class ReservaDAO {
 		}
 	}
 
+	public List<Reserva> buscar() {
+		List<Reserva> reservas = new ArrayList<Reserva>();
+		try {
+			String sql = "SELECT id, fechaEntrada , fechaSalida, valor, formaPago FROM reservas";
+			try(PreparedStatement pstm = con.prepareStatement(sql)){
+				pstm.execute();
+				transformarResultado(reservas, pstm );
+			}
+			return reservas;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void transformarResultado(List<Reserva> reservas, PreparedStatement pstm) {
+		try (ResultSet resultSet = pstm.getResultSet()) {
+			while (resultSet.next()) {
+				Reserva reserva = new Reserva();
+				reserva.setId(resultSet.getInt("id"));
+				reserva.setFechaEntrada(resultSet.getDate("fechaEntrada"));
+				reserva.setFechaSalida(resultSet.getDate("fechaSalida"));
+				reserva.setValor(resultSet.getBigDecimal("valor"));
+				reserva.setFormaPago(resultSet.getString("formaPago"));
+				reservas.add(reserva);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
 }

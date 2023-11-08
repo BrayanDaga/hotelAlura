@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import jdbc.modelo.Huesped;
 
@@ -44,5 +46,38 @@ public class HuespedesDAO {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<Huesped> buscar() {
+	List<Huesped> huespedes = new ArrayList<Huesped>();
+	try {
+		String sql =  "SELECT id, nombre, apellido, fechaDeNacimiento, nacionalidad, telefono, reserva_id FROM huespedes";
+		try(PreparedStatement pstm = con.prepareStatement(sql)){
+			pstm.execute();
+			transformarResultado(huespedes, pstm );
+		}
+		return huespedes;
+	} catch (Exception e) {
+		throw new RuntimeException(e);
+	}
+	}
+
+	private void transformarResultado(List<Huesped> huespedes, PreparedStatement pstm) {
+		try (ResultSet resultSet = pstm.getResultSet()) {
+			while (resultSet.next()) {
+				Huesped huesped = new Huesped();
+				huesped.setId(resultSet.getInt("id"));
+				huesped.setNombre(resultSet.getString("nombre"));
+				huesped.setFechaDeNacimiento(resultSet.getDate("fechaDeNacimiento"));
+				huesped.setApellido(resultSet.getString("apellido"));
+				huesped.setNacionalidad(resultSet.getString("nacionalidad"));
+				huesped.setTelefono(resultSet.getString("telefono"));
+				huesped.setReserva_id(resultSet.getInt("reserva_id"));
+				huespedes.add(huesped);
+			}
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 }
