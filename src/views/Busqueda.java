@@ -19,10 +19,13 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
@@ -277,12 +280,49 @@ public class Busqueda extends JFrame {
 		contentPane.add(btnEliminar);
 
 		JLabel lblEliminar = new JLabel("ELIMINAR");
+		lblEliminar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int selectedIndex = panel.getSelectedIndex();
+				if (selectedIndex == 0) {
+					eliminarReserva();
+				} else if (selectedIndex == 1) {
+
+				}
+
+			}
+		});
 		lblEliminar.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEliminar.setForeground(Color.WHITE);
 		lblEliminar.setFont(new Font("Roboto", Font.PLAIN, 18));
 		lblEliminar.setBounds(0, 0, 122, 35);
 		btnEliminar.add(lblEliminar);
 		setResizable(false);
+	}
+
+	private boolean tieneFilaElegida(JTable tbSelected) {
+		return tbSelected.getSelectedRowCount() == 0 || tbSelected.getSelectedColumnCount() == 0;
+	}
+
+	protected void eliminarReserva() {
+
+		if (tieneFilaElegida(tbReservas)) {
+			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+			return;
+		}
+
+		Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
+				.ifPresentOrElse(fila -> {
+					Integer id = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString());
+
+					int filasModificadas = this.reservasController.eliminar(id);
+
+					modelo.removeRow(tbReservas.getSelectedRow());
+
+					JOptionPane.showMessageDialog(this,
+							String.format("%d item eliminado con éxito!", filasModificadas));
+				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+
 	}
 
 //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"

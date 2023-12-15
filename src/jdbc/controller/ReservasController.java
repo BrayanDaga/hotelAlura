@@ -21,4 +21,8 @@ public class ReservasController {
 	public List<Reserva>  buscar() {
 		return this.reservaDAO.buscar();
 	}
+
+	public int eliminar(Integer id) {
+		return this.reservaDAO.eliminar(id);
+	}
 }
