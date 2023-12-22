@@ -21,5 +21,14 @@ public class HuespedesController {
 	public List<Huesped> buscar(){
 		return huespedesDAO.buscar();
 	}
+	
+	public int eliminar(Integer id) {
+		return this.huespedesDAO.eliminar(id);
+	}
+
+	public List<Huesped> buscar(String textoABuscar) {
+		return huespedesDAO.buscar(textoABuscar);
+
+	}
 
 }

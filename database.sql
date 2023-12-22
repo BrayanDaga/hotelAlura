@@ -9,6 +9,9 @@ CREATE TABLE reservas
    formaPago varchar (100),
    primary key (id)
 );
+
+alter table reservas add estado tinyInt;
+
 CREATE TABLE huespedes
 (
    id integer auto_increment,
@@ -21,6 +24,9 @@ CREATE TABLE huespedes
    primary key (id)
 );
 ALTER TABLE huespedes ADD CONSTRAINT fk_reserva_id FOREIGN KEY (reserva_id) REFERENCES reservas (id);
+alter table Huespedes add estado tinyInt;
+
+
 CREATE TABLE usuarios
 (
    id integer auto_increment,

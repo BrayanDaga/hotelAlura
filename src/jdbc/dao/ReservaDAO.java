@@ -25,7 +25,7 @@ public class ReservaDAO {
 		try {
 			PreparedStatement statement;
 			statement = con.prepareStatement(
-					"INSERT INTO reservas " + "(fechaEntrada, fechaSalida, valor, formaPago)" + " VALUES (?, ?, ?, ? )",
+					"INSERT INTO reservas " + "(fechaEntrada, fechaSalida, valor, formaPago)" + " VALUES (?, ?, ?, ?, 1 )",
 					Statement.RETURN_GENERATED_KEYS);
 
 			try (statement) {
@@ -52,7 +52,7 @@ public class ReservaDAO {
 	public List<Reserva> buscar() {
 		List<Reserva> reservas = new ArrayList<Reserva>();
 		try {
-			String sql = "SELECT id, fechaEntrada , fechaSalida, valor, formaPago FROM reservas";
+			String sql = "SELECT id, fechaEntrada , fechaSalida, valor, formaPago FROM reservas WHERE estado = 1";
 			try(PreparedStatement pstm = con.prepareStatement(sql)){
 				pstm.execute();
 				transformarResultado(reservas, pstm );
@@ -63,6 +63,22 @@ public class ReservaDAO {
 		}
 	}
 
+	public List<Reserva> buscar(int idABuscar) {
+		List<Reserva> reservas = new ArrayList<Reserva>();
+		try {
+			String sql = "SELECT id, fechaEntrada , fechaSalida, valor, formaPago FROM reservas WHERE estado = 1 AND id=?";
+			try(PreparedStatement pstm = con.prepareStatement(sql)){
+				pstm.setInt(1, idABuscar);
+				pstm.execute();
+				transformarResultado(reservas, pstm );
+			}
+			return reservas;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+	
 	private void transformarResultado(List<Reserva> reservas, PreparedStatement pstm) {
 		try (ResultSet resultSet = pstm.getResultSet()) {
 			while (resultSet.next()) {
@@ -102,7 +118,9 @@ public class ReservaDAO {
 	
 	public int eliminar(Integer id) {
 		try {
-			final PreparedStatement statement = con.prepareStatement("DELETE FROM reservas WHERE id = ?");
+			//final PreparedStatement statement = con.prepareStatement("DELETE FROM reservas WHERE id = ?");
+			final PreparedStatement statement = con.prepareStatement("UPDATE reservas set estado = 0  WHERE  id = ?");
+
 			try (statement) {
 				statement.setInt(1, id);
 				statement.execute();
@@ -113,4 +131,26 @@ public class ReservaDAO {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public int modificar(String fechaEntrada, String fechaSalida, Integer valor, String formaPago, Integer id) {
+		try {
+			final PreparedStatement statement = con.prepareStatement(
+				"UPDATE reservas SET fechaEntrada = ?, fechaSalida = ?, valor = ?, formaPago = ? WHERE id = ?"
+			);
+			try (statement) {
+				statement.setString(1, fechaEntrada);
+				statement.setString(2, fechaSalida);
+				statement.setInt(3, valor);
+				statement.setString(4, formaPago);
+				statement.setInt(5, id);
+				statement.execute();
+				int updateCount = statement.getUpdateCount();
+				return updateCount;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+
 }

@@ -266,6 +266,12 @@ public class Busqueda extends JFrame {
 		contentPane.add(btnEditar);
 
 		JLabel lblEditar = new JLabel("EDITAR");
+		lblEditar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				modificar();
+			}
+		});
 		lblEditar.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEditar.setForeground(Color.WHITE);
 		lblEditar.setFont(new Font("Roboto", Font.PLAIN, 18));
@@ -286,6 +292,7 @@ public class Busqueda extends JFrame {
 				int selectedIndex = panel.getSelectedIndex();
 				if (selectedIndex == 0) {
 					eliminarReserva();
+					llenarTablaReservas();
 				} else if (selectedIndex == 1) {
 
 				}
@@ -338,12 +345,18 @@ public class Busqueda extends JFrame {
 	}
 
 	private List<Reserva> buscarReservas() {
-		return this.reservasController.buscar();
+		String textoABuscar = txtBuscar.getText();
+		if (textoABuscar.equals("")) {
+			return this.reservasController.buscar();
+		} else {
+			return this.reservasController.buscar(textoABuscar);
+		}
 	}
 
 	private void llenarTablaReservas() {
 		modelo.setRowCount(0);
 		List<Reserva> reserva = buscarReservas();
+
 		try {
 			for (Reserva reservas : reserva) {
 				modelo.addRow(new Object[] { reservas.getId(), reservas.getFechaEntrada(), reservas.getFechaSalida(),
@@ -355,7 +368,13 @@ public class Busqueda extends JFrame {
 	}
 
 	private List<Huesped> buscarHuespedes() {
-		return this.huespedesController.buscar();
+		String textoABuscar = txtBuscar.getText();
+		if (textoABuscar.equals("")) {
+			return this.huespedesController.buscar();
+		} else {
+			return this.huespedesController.buscar(textoABuscar);
+		}
+
 	}
 
 	private void llenarTablaHuespedes() {
@@ -371,4 +390,27 @@ public class Busqueda extends JFrame {
 			throw e;
 		}
 	}
+
+	private void modificar() {
+		if (tieneFilaElegida(tbReservas)) {
+			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+			return;
+		}
+
+		Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
+				.ifPresentOrElse(fila -> {
+					Integer id = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString());
+					String fechaEntrada = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 1);
+					String fechaSalida = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 2);
+					Integer valor = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 3).toString());
+					String formaPago = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 4);
+
+					int filasModificadas = this.reservasController.modificar(fechaEntrada, fechaSalida, valor,
+							formaPago, id);
+
+					JOptionPane.showMessageDialog(this,
+							String.format("%d item modificado con éxito!", filasModificadas));
+				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+	}
+
 }

@@ -49,17 +49,17 @@ public class HuespedesDAO {
 	}
 
 	public List<Huesped> buscar() {
-	List<Huesped> huespedes = new ArrayList<Huesped>();
-	try {
-		String sql =  "SELECT id, nombre, apellido, fechaDeNacimiento, nacionalidad, telefono, reserva_id FROM huespedes";
-		try(PreparedStatement pstm = con.prepareStatement(sql)){
-			pstm.execute();
-			transformarResultado(huespedes, pstm );
+		List<Huesped> huespedes = new ArrayList<Huesped>();
+		try {
+			String sql = "SELECT id, nombre, apellido, fechaDeNacimiento, nacionalidad, telefono, reserva_id FROM huespedes";
+			try (PreparedStatement pstm = con.prepareStatement(sql)) {
+				pstm.execute();
+				transformarResultado(huespedes, pstm);
+			}
+			return huespedes;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		return huespedes;
-	} catch (Exception e) {
-		throw new RuntimeException(e);
-	}
 	}
 
 	private void transformarResultado(List<Huesped> huespedes, PreparedStatement pstm) {
@@ -75,9 +75,39 @@ public class HuespedesDAO {
 				huesped.setReserva_id(resultSet.getInt("reserva_id"));
 				huespedes.add(huesped);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
+	}
+
+	public int eliminar(Integer id) {
+		try {
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM huespedes WHERE id = ?");
+
+			try (statement) {
+				statement.setInt(1, id);
+				statement.execute();
+				int updateCount = statement.getUpdateCount();
+				return updateCount;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Huesped> buscar(String textoABuscar) {
+		List<Huesped> huespedes = new ArrayList<Huesped>();
+		try {
+			String sql = "SELECT id, nombre, apellido, fechaDeNacimiento, nacionalidad, telefono, reserva_id FROM huespedes WHERE apellido LIKE ?";
+			try (PreparedStatement pstm = con.prepareStatement(sql)) {
+				pstm.setString(1, textoABuscar+"%");
+				pstm.execute();
+				transformarResultado(huespedes, pstm);
+			}
+			return huespedes;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

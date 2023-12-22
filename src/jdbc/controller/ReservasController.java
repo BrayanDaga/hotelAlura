@@ -9,20 +9,30 @@ import jdbc.modelo.Reserva;
 public class ReservasController {
 
 	private ReservaDAO reservaDAO;
+
 	public ReservasController() {
-        ConnectionFactory factory = new ConnectionFactory();
-        this.reservaDAO =  new ReservaDAO(factory.recuperaConexion());
-        }
+		ConnectionFactory factory = new ConnectionFactory();
+		this.reservaDAO = new ReservaDAO(factory.recuperaConexion());
+	}
 
 	public void guardar(Reserva nuevaReserva) {
 		reservaDAO.guardar(nuevaReserva);
 	}
-	
-	public List<Reserva>  buscar() {
-		return this.reservaDAO.buscar();
-	}
 
 	public int eliminar(Integer id) {
 		return this.reservaDAO.eliminar(id);
+	}
+
+	public int modificar(String fechaEntrada, String fechaSalida, Integer valor, String formaPago, Integer id) {
+		return this.reservaDAO.modificar(fechaEntrada, fechaSalida, valor, formaPago, id);
+	}
+	
+	public List<Reserva> buscar() {
+		return this.reservaDAO.buscar();
+	}
+
+	public List<Reserva> buscar(String textoABuscar) {
+		int idABuscar = Integer.parseInt(textoABuscar);
+		return this.reservaDAO.buscar(idABuscar);
 	}
 }
