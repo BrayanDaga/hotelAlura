@@ -83,7 +83,7 @@ public class HuespedesDAO {
 
 	public int eliminar(Integer id) {
 		try {
-			final PreparedStatement statement = con.prepareStatement("DELETE FROM huespedes WHERE id = ?");
+			final PreparedStatement statement = con.prepareStatement("delete from huespedes where id= ?");
 
 			try (statement) {
 				statement.setInt(1, id);
@@ -96,6 +96,22 @@ public class HuespedesDAO {
 		}
 	}
 
+	public int eliminarPorReserva(Integer idReserva) {
+	    try {
+	        final PreparedStatement statement = con.prepareStatement("DELETE FROM huespedes WHERE reserva_id = ?");
+
+	        try (statement) {
+	            statement.setInt(1, idReserva);
+	            statement.execute();
+	            int updateCount = statement.getUpdateCount();
+	            return updateCount;
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException(e);
+	    }
+	}
+
+	
 	public List<Huesped> buscar(String textoABuscar) {
 		List<Huesped> huespedes = new ArrayList<Huesped>();
 		try {

@@ -20,7 +20,7 @@ public class ReservasController {
 	}
 
 	public int eliminar(Integer id) {
-		return this.reservaDAO.eliminar(id);
+		return this.reservaDAO.eliminarReservaConHuespedes(id);
 	}
 
 	public int modificar(String fechaEntrada, String fechaSalida, Integer valor, String formaPago, Integer id) {

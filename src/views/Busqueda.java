@@ -294,7 +294,8 @@ public class Busqueda extends JFrame {
 					eliminarReserva();
 					llenarTablaReservas();
 				} else if (selectedIndex == 1) {
-
+					eliminarHuesped();
+					llenarTablaHuespedes();
 				}
 
 			}
@@ -306,6 +307,8 @@ public class Busqueda extends JFrame {
 		btnEliminar.add(lblEliminar);
 		setResizable(false);
 	}
+
+	
 
 	private boolean tieneFilaElegida(JTable tbSelected) {
 		return tbSelected.getSelectedRowCount() == 0 || tbSelected.getSelectedColumnCount() == 0;
@@ -332,6 +335,28 @@ public class Busqueda extends JFrame {
 
 	}
 
+	protected void eliminarHuesped() {
+		if (tieneFilaElegida(tbHuespedes)) {
+			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+			return;
+		}
+		
+		Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
+		.ifPresentOrElse(fila -> {
+			Integer id = Integer.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString());
+			JOptionPane.showMessageDialog(null, " "+ id);
+			int filasModificadas = this.huespedesController.eliminar(id);
+
+			modeloHuesped.removeRow(tbHuespedes.getSelectedRow());
+
+			JOptionPane.showMessageDialog(this,
+					String.format("%d item eliminado con éxito!", filasModificadas));
+		}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+
+		
+	}
+	
+	
 //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
 	private void headerMousePressed(java.awt.event.MouseEvent evt) {
 		xMouse = evt.getX();

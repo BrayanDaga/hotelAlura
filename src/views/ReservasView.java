@@ -49,6 +49,7 @@ public class ReservasView extends JFrame {
 	int xMouse, yMouse;
 	private JLabel labelExit;
 	private JLabel labelAtras;
+	public static int idReserva;
 
 	/**
 	 * Launch the application.
@@ -398,7 +399,8 @@ public class ReservasView extends JFrame {
 
 		reservasController.guardar(nuevaReserva);
 		JOptionPane.showMessageDialog(contentPane, "Reserva guardada con exito, id: " + nuevaReserva.getId());
-		RegistroHuesped registroHuesped = new RegistroHuesped(nuevaReserva.getId());
+		idReserva = nuevaReserva.getId();//lo salvo en esta variable estatica para llamarla desde otro formulario
+		RegistroHuesped registroHuesped = new RegistroHuesped();
 		registroHuesped.setVisible(true);
 		dispose();
 

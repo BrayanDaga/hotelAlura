@@ -15,7 +15,7 @@ public class ConnectionFactory {
 		pooledDataSource.setJdbcUrl("jdbc:mysql://localhost/hotelalura?useTimeZone=true&serverTimeZone=UTC");
 		pooledDataSource.setUser("root");
 		pooledDataSource.setPassword("");
-		pooledDataSource.setMaxPoolSize(10);
+		pooledDataSource.setMaxPoolSize(2);
 
 		this.dataSource = pooledDataSource;
 

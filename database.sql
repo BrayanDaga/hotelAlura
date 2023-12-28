@@ -7,10 +7,9 @@ CREATE TABLE reservas
    fechaSalida DATE,
    valor decimal(10,2),
    formaPago varchar (100),
+   estado tinyint,
    primary key (id)
 );
-
-alter table reservas add estado tinyInt;
 
 CREATE TABLE huespedes
 (
@@ -20,12 +19,13 @@ CREATE TABLE huespedes
    fechaDeNacimiento date not null,
    nacionalidad varchar (100) not null,
    telefono varchar (50) not null,
-   reserva_id integer,
-   primary key (id)
+   reserva_id integer not null,
+   estado tinyint,
+   primary key (id),
+   FOREIGN KEY (reserva_id)
+        REFERENCES reservas (id)
+        ON DELETE CASCADE
 );
-ALTER TABLE huespedes ADD CONSTRAINT fk_reserva_id FOREIGN KEY (reserva_id) REFERENCES reservas (id);
-alter table Huespedes add estado tinyInt;
-
 
 CREATE TABLE usuarios
 (
@@ -36,3 +36,5 @@ CREATE TABLE usuarios
 );
 
 INSERT INTO usuarios(nombre,contraseña) VALUES ('brayandaga','123456');
+
+

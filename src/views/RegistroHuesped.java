@@ -65,7 +65,8 @@ public class RegistroHuesped extends JFrame {
 	 * Create the frame.
 	 */
 
-	public RegistroHuesped(int idReserva) {
+	public RegistroHuesped() {
+		int idReserva = ReservasView.idReserva;
 		huespedesController = new HuespedesController();
 
 		setIconImage(
@@ -353,9 +354,6 @@ public class RegistroHuesped extends JFrame {
 		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
 		labelExit.setForeground(SystemColor.black);
 		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
-	}
-
-	public RegistroHuesped() {
 	}
 
 	// Código que permite mover la ventana por la pantalla según la posición de "x"
