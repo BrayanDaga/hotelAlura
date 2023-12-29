@@ -35,6 +35,8 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -269,7 +271,14 @@ public class Busqueda extends JFrame {
 		lblEditar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				modificar();
+				int selectedIndex = panel.getSelectedIndex();
+				if (selectedIndex == 0) {
+					modificarReserva();
+					llenarTablaReservas();
+				} else if (selectedIndex == 1) {
+					modificarHuesped();
+					llenarTablaHuespedes();
+				}
 			}
 		});
 		lblEditar.setHorizontalAlignment(SwingConstants.CENTER);
@@ -308,8 +317,6 @@ public class Busqueda extends JFrame {
 		setResizable(false);
 	}
 
-	
-
 	private boolean tieneFilaElegida(JTable tbSelected) {
 		return tbSelected.getSelectedRowCount() == 0 || tbSelected.getSelectedColumnCount() == 0;
 	}
@@ -340,23 +347,21 @@ public class Busqueda extends JFrame {
 			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
 			return;
 		}
-		
+
 		Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
-		.ifPresentOrElse(fila -> {
-			Integer id = Integer.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString());
-			JOptionPane.showMessageDialog(null, " "+ id);
-			int filasModificadas = this.huespedesController.eliminar(id);
+				.ifPresentOrElse(fila -> {
+					Integer id = Integer.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString());
+					JOptionPane.showMessageDialog(null, " " + id);
+					int filasModificadas = this.huespedesController.eliminar(id);
 
-			modeloHuesped.removeRow(tbHuespedes.getSelectedRow());
+					modeloHuesped.removeRow(tbHuespedes.getSelectedRow());
 
-			JOptionPane.showMessageDialog(this,
-					String.format("%d item eliminado con éxito!", filasModificadas));
-		}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+					JOptionPane.showMessageDialog(this,
+							String.format("%d item eliminado con éxito!", filasModificadas));
+				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
 
-		
 	}
-	
-	
+
 //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
 	private void headerMousePressed(java.awt.event.MouseEvent evt) {
 		xMouse = evt.getX();
@@ -416,7 +421,34 @@ public class Busqueda extends JFrame {
 		}
 	}
 
-	private void modificar() {
+	private void modificarHuesped() {
+		if (tieneFilaElegida(tbHuespedes)) {
+			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+			return;
+		}
+
+		Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
+				.ifPresentOrElse(fila -> {
+					Integer id = Integer.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString());
+					String nombre = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 1);
+					String apellido = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 2);
+					Date fechaDeNacimiento = Date
+							.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3).toString());
+					String nacionalidad = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4);
+					String telefono = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5);
+
+					int filasModificadas = this.huespedesController.modificar(id, nombre, apellido, fechaDeNacimiento,
+							nacionalidad, telefono);
+
+					if (filasModificadas > 0) {
+						JOptionPane.showMessageDialog(this,
+								String.format("%d item modificado con éxito!", filasModificadas));
+					}
+
+				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+	}
+
+	private void modificarReserva() {
 		if (tieneFilaElegida(tbReservas)) {
 			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
 			return;
@@ -425,9 +457,13 @@ public class Busqueda extends JFrame {
 		Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
 				.ifPresentOrElse(fila -> {
 					Integer id = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString());
-					String fechaEntrada = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 1);
-					String fechaSalida = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 2);
-					Integer valor = Integer.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 3).toString());
+					Date fechaEntrada = Date
+							.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 1).toString());
+					Date fechaSalida = Date
+							.valueOf(modelo.getValueAt(tbReservas.getSelectedRow(), 2).toString());
+
+					BigDecimal valor = new BigDecimal(modelo.getValueAt(tbReservas.getSelectedRow(), 3).toString());
+					
 					String formaPago = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 4);
 
 					int filasModificadas = this.reservasController.modificar(fechaEntrada, fechaSalida, valor,

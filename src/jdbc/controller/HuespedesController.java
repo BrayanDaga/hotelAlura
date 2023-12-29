@@ -1,5 +1,6 @@
 package jdbc.controller;
 
+import java.sql.Date;
 import java.util.List;
 
 import jdbc.dao.HuespedesDAO;
@@ -29,6 +30,12 @@ public class HuespedesController {
 	public List<Huesped> buscar(String textoABuscar) {
 		return huespedesDAO.buscar(textoABuscar);
 
+	}
+
+	public int modificar(Integer id, String nombre, String apellido, Date fechaDeNacimiento, String nacionalidad,
+			String telefono) {
+		
+		return huespedesDAO.modificar(id,nombre,apellido,fechaDeNacimiento,nacionalidad,telefono);
 	}
 
 }

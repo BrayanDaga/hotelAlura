@@ -1,5 +1,7 @@
 package jdbc.controller;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 import jdbc.dao.ReservaDAO;
@@ -23,7 +25,7 @@ public class ReservasController {
 		return this.reservaDAO.eliminarReservaConHuespedes(id);
 	}
 
-	public int modificar(String fechaEntrada, String fechaSalida, Integer valor, String formaPago, Integer id) {
+	public int modificar(Date fechaEntrada, Date fechaSalida, BigDecimal valor, String formaPago, Integer id) {
 		return this.reservaDAO.modificar(fechaEntrada, fechaSalida, valor, formaPago, id);
 	}
 	

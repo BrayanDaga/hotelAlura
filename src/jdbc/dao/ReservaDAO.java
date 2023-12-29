@@ -154,14 +154,14 @@ public class ReservaDAO {
 		}
 	}
 
-	public int modificar(String fechaEntrada, String fechaSalida, Integer valor, String formaPago, Integer id) {
+	public int modificar(Date fechaEntrada, Date fechaSalida, BigDecimal valor, String formaPago, Integer id) {
 		try {
 			final PreparedStatement statement = con.prepareStatement(
 					"UPDATE reservas SET fechaEntrada = ?, fechaSalida = ?, valor = ?, formaPago = ? WHERE id = ?");
 			try (statement) {
-				statement.setString(1, fechaEntrada);
-				statement.setString(2, fechaSalida);
-				statement.setInt(3, valor);
+				statement.setDate(1, fechaEntrada);
+				statement.setDate(2, fechaSalida);
+				statement.setBigDecimal(3, valor);
 				statement.setString(4, formaPago);
 				statement.setInt(5, id);
 				statement.execute();

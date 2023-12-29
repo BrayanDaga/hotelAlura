@@ -1,12 +1,15 @@
 package jdbc.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import jdbc.modelo.Huesped;
 
@@ -123,6 +126,31 @@ public class HuespedesDAO {
 			}
 			return huespedes;
 		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public int modificar(Integer id, String nombre, String apellido, Date fechaDeNacimiento, String nacionalidad,
+			String telefono) {
+		JOptionPane.showMessageDialog(null, "Mensaje de prueba");
+		try {
+			final PreparedStatement statement = con.prepareStatement(
+					"UPDATE huespedes SET nombre = ?, apellido = ?,  fechaDeNacimiento = ?, nacionalidad = ?, telefono = ? WHERE ID = ?");
+
+			try (statement) {
+				statement.setString(1, nombre);
+				statement.setString(2, apellido);
+				statement.setDate(3, fechaDeNacimiento);
+				statement.setString(4, nacionalidad);
+				statement.setString(5, telefono);
+				statement.setInt(6, id);
+				statement.execute();
+
+				int updateCount = statement.getUpdateCount();
+
+				return updateCount;
+			}
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
